@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
   let collection = await db.collection("general");
   let results = await collection.find().toArray();
   //console.log(results);
-  res.send(results).status(200);
+  res.send("hello").status(200);
 });
 
 router.get("/general", async (req, res) => {
