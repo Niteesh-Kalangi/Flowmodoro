@@ -42,7 +42,7 @@ function News(collection_name){
 
 
   useEffect(() => {
-    fetch("http://localhost:5050/articles/").then(
+    fetch("https://flowmoro-test2.vercel.app/").then(
       res => res.json()
     ).then(
       data => {
