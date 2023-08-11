@@ -23,7 +23,7 @@ class Database {
 
 export default new Database();
 */
-const connectionString = "mongodb+srv://niteesh8175:W4B2zcEPAIyahqEL@cluster0.pgnevai.mongodb.net/?retryWrites=true&w=majority";
+const connectionString = process.env.ATLAS_URI;
 const client = new MongoClient(connectionString);
 
 let conn;
