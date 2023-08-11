@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors(
   {
-    origin: ["https://flowmoro.com"],
+    origin: ["https://www.flowmoro.com"],
     methods:  ["GET", "POST"],
     credentials: true
 
