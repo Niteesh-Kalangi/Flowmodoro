@@ -3,18 +3,24 @@ import cors from "cors";
 import { config } from "dotenv";
 config()
 import articles from "./routes/articles.js";
+import { METHODS } from 'http';
 
 const PORT = 8000;
 const app = express();
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: ["https://flowmoro-test-server-8d7egkkik-niteesh-kalangi.vercel.app/"],
+    methods:  ["GET", "POST"],
+    credentials: true
+
+  }
+));
 app.use(express.json());
 
 //app.use("/", articles);
-app.get("/backend/hello/", (req, res) => {
-  res.json({
-      message: "Hello World"
-  });
+app.get("/", (req, res) => {
+  res.json("Hello");
 });
 
 // start the Express server
