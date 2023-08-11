@@ -18,10 +18,10 @@ app.use(cors(
 ));
 app.use(express.json());
 
-//app.use("/", articles);
-app.get("/", (req, res) => {
+app.use("/", articles);
+/*app.get("/", (req, res) => {
   res.json("Hello");
-});
+});*/
 
 // start the Express server
 app.listen(PORT, () => {
