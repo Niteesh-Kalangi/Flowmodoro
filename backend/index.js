@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors(
   {
-    origin: ["https://flowmoro-test-server-8d7egkkik-niteesh-kalangi.vercel.app/"],
+    origin: ["https://flowmoro-test2-4m356c1r4-niteesh-kalangi.vercel.app/"],
     methods:  ["GET", "POST"],
     credentials: true
 
