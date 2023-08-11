@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from "cors";
-import { config } from "dotenv";
-config()
+/*import { config } from "dotenv";
+config()*/
 import articles from "./routes/articles.js";
 import { METHODS } from 'http';
 
