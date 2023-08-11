@@ -33,7 +33,7 @@ export const NewsNav = (props) => {
           <li>
               <a href = "#"
               onClick={() => {
-                fetch("https://flowmoro-test2.vercel.app/" + item + "/").then(
+                fetch("https://flowmoro-backend.vercel.app/" + item + "/").then(
                   res => res.json()
                 ).then(
                   data => {
