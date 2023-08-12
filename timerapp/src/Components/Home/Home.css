@@ -40,7 +40,7 @@ html{
   .first_line {
     border-right: 2px solid transparent;
     /* define animation types for text + cursor */
-    animation: typewriter_1 1.5s steps(8) 1 normal both,
+    animation: typewriter_1 1.5s steps(8) 1s 1 normal both,
         first_cursor 600ms steps(8) 3.5;
     
     font-size: 7rem;
@@ -52,8 +52,8 @@ html{
     /* define animation types for text + cursor */
     animation: typewriter_2 2s steps(32) 1s 1 normal both,
         second_cursor 600ms steps(32) 4;
-    -webkit-animation-delay: 2s;
-    animation-delay: 2s;
+    -webkit-animation-delay: 3s;
+    animation-delay: 3s;
     font-size: 3rem;
     color: white;
   }
@@ -94,7 +94,7 @@ html{
   .scrollButton{
     visibility: hidden;
     animation: 3s fadeIn;
-    animation-delay: 4s;
+    animation-delay: 5s;
     animation-fill-mode: forwards;
     margin-left: calc(50% - 25px);
   }
