@@ -29,7 +29,7 @@ export const NewsNav = (props) => {
             </li>
         );*/
 
-        var link = "/" + item;
+        //no link
 
         return (
           <li>
