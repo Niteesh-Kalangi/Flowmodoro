@@ -77,6 +77,7 @@
   
   .dropdown-content li:hover {
     background: orange;
+    cursor: pointer;
   }
   
   .dropdown-content li a {
