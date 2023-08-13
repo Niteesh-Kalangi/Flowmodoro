@@ -41,7 +41,7 @@ html{
     border-right: 2px solid transparent;
     /* define animation types for text + cursor */
     animation: typewriter_1 1.5s steps(8) 1s 1 normal both,
-        first_cursor 600ms steps(8) 3.5;
+        first_cursor 600ms steps(8) 4.5;
     
     font-size: 7rem;
     color: orange;
