@@ -28,10 +28,10 @@ export const NewsNav = (props) => {
                   }}>{item}</a>
             </li>
         );*/
-
+        var dir = "/news" + item;
         return (
           <li>
-              <a href = "#"
+              <a
               onClick={() => {
                 fetch("http://localhost:5050/articles/" + item + "/").then(
                   res => res.json()
