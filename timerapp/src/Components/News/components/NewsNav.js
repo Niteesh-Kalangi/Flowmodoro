@@ -29,7 +29,7 @@ export const NewsNav = (props) => {
             </li>
         );*/
 
-        //no link dfd
+        //no link
 
         return (
           <li>
