@@ -67,7 +67,7 @@ const CountdownTimer = (props) => {
         }
     });
     const [showTodos, setShowTodos] = useState(true);
-    const [isDesktopBig, setIsDesktopBig] = useState(window.innerWidth > 1100);
+    const [isDesktopBig, setIsDesktopBig] = useState(window.innerWidth > 800);
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const[studyLog, setStudyLog] = useState(() => {
@@ -115,6 +115,15 @@ const CountdownTimer = (props) => {
         return num ? num : 0;
     });
 
+    const [todoList, setTodoList] = useState(() => {
+        let list = localStorage.getItem("todoList");
+        return list ? JSON.parse(list) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('todoList', JSON.stringify(todoList));
+    }, [todoList]);
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             document.title = `${remainingTime.hours != "00" ? remainingTime.hours + ":" : ""}${remainingTime.minutes}:${remainingTime.seconds} - Flowmoro`;
@@ -124,6 +133,7 @@ const CountdownTimer = (props) => {
                     incrementActiveTasks();
                 }
             }
+            console.log(activeTasks);
             setEndTime(moment().format('LT'));
             localStorage.setItem('userSpecifiedTime', String(userSpecifiedTime));
             localStorage.setItem('remainingTime', JSON.stringify(remainingTime));
@@ -230,25 +240,20 @@ const CountdownTimer = (props) => {
         });
     }
 
-    function isActive(id) {
-        var found = activeTasks.some(function(activeItemId) {
-            return activeItemId == id;
-        });
-        return found;
+    const isActive = (id) => {
+        const index = activeTasks.indexOf(id);
+        return index > -1;
     }
 
-    function updateActive(id, title) {
-        var found = activeTasks.some(function(activeItemId) {
-            if (activeItemId == id) {
-                setActiveTasks((prevActiveTasks) => {
-                    return prevActiveTasks.filter((prevId) => {
-                        return prevId != id;
-                    })
+    const updateActive = (id, title) => {
+        const index = activeTasks.indexOf(id);
+        if (index > -1) {
+            setActiveTasks((prevActiveTasks) => {
+                return prevActiveTasks.filter((taskId) => {
+                    return taskId != id;
                 });
-            }
-            return activeItemId == id;
-        });
-        if (!found) {
+            });
+        } else {
             setIdToTitle((prevIdToTitle) => {
                 prevIdToTitle[id] = title;
                 return prevIdToTitle;
@@ -348,8 +353,24 @@ const CountdownTimer = (props) => {
 
     function parseTime() {
         var time = Number(userTimeInputSeconds) + 60 * Number(userTimeInputMinutes) + 3600 * Number(userTimeInputHours);
-        return time
+        return time;
     }
+
+    const completeTask = (id, title) => {
+        setTodoList((prevTodoList) => {
+            return prevTodoList.filter((item) => {
+                return item.id != id;
+            });
+        });
+        // setActiveTasks((prevActiveTasks) => {
+        //     return prevActiveTasks.filter((taskId) => {
+        //         return taskId != id;
+        //     });
+        // });
+        updateActive(id, title);
+        localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
+        // e.stopPropagation();
+    };
 
     var x = isWork? remainingTimeInSeconds / defaultTotalTimeInSecondsWork : remainingTimeInSeconds / defaultTotalTimeInSecondsRest;
     var f = remainingTime.hours == "00" ? 90 : 68;
@@ -364,7 +385,8 @@ const CountdownTimer = (props) => {
                 }}} className="showtodosbutton">
                     &#9776;
                 </button>
-                {showTodos && <TimerTodoList updateActive={updateActive} isActive={isActive} incrementCompleted={setNumCompletedTasks}/>}
+                {showTodos && <TimerTodoList todoList={todoList} updateActive={updateActive} isActive={isActive} 
+                incrementCompleted={setNumCompletedTasks} completeTask={completeTask} />}
             </div>
             <div style={{"--offset": offset}} className="countdown-wrapper">
                 {userSpecifiedTime ?
