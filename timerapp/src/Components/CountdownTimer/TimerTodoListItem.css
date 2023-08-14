@@ -11,6 +11,7 @@
     padding: 10px;
     overflow-x: auto;
     width: 80%;
+    z-index: 2;
 }
 
 .timertodolistitemcompletebutton {
@@ -28,6 +29,7 @@
 .timertodolistitemcompletebutton:hover {
     background-color: white;
     color: orange;
+    cursor: pointer;
     transition: 0.2s;
 }
 
