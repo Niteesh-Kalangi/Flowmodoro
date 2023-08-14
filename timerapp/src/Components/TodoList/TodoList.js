@@ -68,14 +68,12 @@ const TodoList = () => {
   };
 
   const deleteTask = (id, e) => {
-    setTimeout(function() {
-      setTodoList(
-        todoList.filter((item) => {
-          return item.id != id;
-        })
-      );
-    }, 200);
-    e.stopPropagation();
+    setTodoList((prevTodoList) => {
+      return prevTodoList.filter((item) => {
+        return item.id != id;
+      })
+    });
+    // e.stopPropagation();
   };
 
   const editTask = (id, e) => {
