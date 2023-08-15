@@ -49,10 +49,6 @@ const CountdownTimer = (props) => {
         const number = Number(localStorage.getItem('workSession'));
         return number ? number : defaultWorkSessionNumber;
     });
-    const [breakSession, setBreakSession] = useState(() => {
-        const number = Number(localStorage.getItem('breakSession'));
-        return number ? number : defaultBreakSessionNumber;
-    });
     const [isWork, setIsWork] = useState(() => {
         const bool = localStorage.getItem('isWork');
         return bool == 'false' ? false : true;
@@ -120,6 +116,16 @@ const CountdownTimer = (props) => {
         return list ? JSON.parse(list) : [];
     });
 
+    const [completedList, setCompletedList] = useState(() => {
+        const list = localStorage.getItem("completedList");
+        return list ? JSON.parse(list) : [];
+    });
+
+    const [focusTime, setFocusTime] = useState(() => {
+        const focusTime = localStorage.getItem("focusTime");
+        return focusTime ? Number(focusTime) : 0; 
+    })
+
     useEffect(() => {
         localStorage.setItem('todoList', JSON.stringify(todoList));
     }, [todoList]);
@@ -133,7 +139,8 @@ const CountdownTimer = (props) => {
                     incrementActiveTasks();
                 }
             }
-            console.log(activeTasks);
+            // console.log(activeTasks);
+            // console.log(studySession);
             setEndTime(moment().format('LT'));
             localStorage.setItem('userSpecifiedTime', String(userSpecifiedTime));
             localStorage.setItem('remainingTime', JSON.stringify(remainingTime));
@@ -141,7 +148,6 @@ const CountdownTimer = (props) => {
             localStorage.setItem('remainingTimeInSeconds', String(remainingTimeInSeconds));
             localStorage.setItem('isWork', String(isWork));
             localStorage.setItem('workSession', String(workSession));
-            localStorage.setItem('breakSession', String(breakSession));
             localStorage.setItem('studySession', JSON.stringify(studySession));
             localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
             localStorage.setItem('studyLog', JSON.stringify(studyLog));
@@ -151,6 +157,8 @@ const CountdownTimer = (props) => {
             localStorage.setItem('endTime', String(endTime));
             localStorage.setItem('idToTitle', JSON.stringify(idToTitle));
             localStorage.setItem('numCompletedTasks', String(numCompletedTasks));
+            localStorage.setItem('completedList', JSON.stringify(completedList));
+            localStorage.setItem('focusTime', String(focusTime));
         }, 1000);
         return () => clearTimeout(intervalId);
     }, [remainingTime, paused]);
@@ -185,7 +193,6 @@ const CountdownTimer = (props) => {
         } else if (remainingTime.seconds === "00" && remainingTime.minutes === "00" && remainingTime.hours === "00" && !isWork) {
             setRemainingTime(defaultRemainingTimeWork);
             setIsWork((prevIsWork) => !prevIsWork);
-            setBreakSession((prevWorkSession) => prevWorkSession + 1);
             setRemainingTimeInSeconds(defaultTotalTimeInSecondsWork);
             const audio = new Audio(sound2);
             audio.play();
@@ -221,6 +228,9 @@ const CountdownTimer = (props) => {
         });
 
         setRemainingTimeInSeconds(prevTime => prevTime - 1);
+        if(isWork) {
+            setFocusTime((prevFocusTime) => prevFocusTime + 1);
+        }
         
         function padZeroes(num) {
             return String(num).length === 2 ? String(num) : "0" + String(num);
@@ -257,7 +267,7 @@ const CountdownTimer = (props) => {
             setIdToTitle((prevIdToTitle) => {
                 prevIdToTitle[id] = title;
                 return prevIdToTitle;
-            })
+            });
             setActiveTasks((prevActiveTasks) => {
                 return [...prevActiveTasks, id];
             });
@@ -280,7 +290,6 @@ const CountdownTimer = (props) => {
         updateEndTime();
         setShowTodos(false);
         setWorkSession(defaultWorkSessionNumber);
-        setBreakSession(defaultBreakSessionNumber);
         setUserSpecifiedTime(false);
         setIsWork(true);
         setRemainingTime(defaultRemainingTimeWork);
@@ -288,16 +297,22 @@ const CountdownTimer = (props) => {
         setRemainingTimeInSeconds(defaultTotalTimeInSecondsWork);
         localStorage.setItem("remainingTimeInSeconds", String(defaultTotalTimeInSecondsWork));
         setPaused(true);
-        setStudyLog([{"studySession": {...studySession}, "idToTitle": {...idToTitle}, "startDate": startDate, "startTime": startTime, "endTime": endTime, "numCompletedTasks": numCompletedTasks}, ...studyLog]);
+        setStudyLog([{"studySession": {...studySession}, "idToTitle": {...idToTitle}, "startDate": startDate, 
+        "startTime": startTime, "endTime": endTime, "numCompletedTasks": numCompletedTasks, 
+        "completedList": completedList, "focusTime": focusTime}, ...studyLog]);
         localStorage.setItem("studyLog", JSON.stringify(studyLog));
         setStudySession({});
         localStorage.setItem("studySession", JSON.stringify(studySession));
         setActiveTasks([]);
         localStorage.setItem("activeTasks", JSON.stringify(activeTasks));
+        setCompletedList([]);
+        localStorage.setItem("completedList", JSON.stringify(completedList));
         setIdToTitle({});
         localStorage.setItem("idToTitle", JSON.stringify(idToTitle));
         setNumCompletedTasks(0);
         localStorage.setItem('numCompletedTasks', String(0));
+        setFocusTime(0);
+        localStorage.setItem('focusTime', String(0));
     }
 
     function resetTime() {
@@ -318,14 +333,11 @@ const CountdownTimer = (props) => {
         }
         if (isWork) {
             setIsWork(false);
-            if (workSession != 1) {
-                setBreakSession((prev) => prev + 1);
-            }
+            setWorkSession(prevWorkSession => prevWorkSession + 1);
             setRemainingTime(defaultRemainingTimeBreak);
             setRemainingTimeInSeconds(defaultTotalTimeInSecondsRest);
         } else {
             setIsWork(true);
-            setWorkSession((prev) => prev + 1);
             setRemainingTime(defaultRemainingTimeWork);
             setRemainingTimeInSeconds(defaultTotalTimeInSecondsWork);
         }
@@ -362,14 +374,32 @@ const CountdownTimer = (props) => {
                 return item.id != id;
             });
         });
-        // setActiveTasks((prevActiveTasks) => {
-        //     return prevActiveTasks.filter((taskId) => {
-        //         return taskId != id;
-        //     });
-        // });
-        updateActive(id, title);
-        localStorage.setItem('activeTasks', JSON.stringify(activeTasks));
-        // e.stopPropagation();
+        setCompletedList((prevCompletedList) => {
+            return [...prevCompletedList, id];
+        });
+        setActiveTasks((prevActiveTasks) => {
+            return prevActiveTasks.filter((taskId) => {
+                return taskId != id;
+            });
+        });
+        setIdToTitle((prevIdToTitle) => {
+            prevIdToTitle[id] = title;
+            return prevIdToTitle;
+        });
+        if (Object.keys(studySession).indexOf(id) == -1) {
+            setStudySession((prevStudySession) => {
+                var newStudySession =  {
+                    ...prevStudySession,
+                };
+                newStudySession[id] = 0;
+                return newStudySession;
+            });
+        }
+        // updateActive(id, title);
+        localStorage.setItem("activeTasks", JSON.stringify(activeTasks));
+        localStorage.setItem("idToTitle", JSON.stringify(idToTitle));
+        localStorage.setItem("completedList", JSON.stringify(completedList));
+        localStorage.setItem("studySession", JSON.stringify(studySession));
     };
 
     var x = isWork? remainingTimeInSeconds / defaultTotalTimeInSecondsWork : remainingTimeInSeconds / defaultTotalTimeInSecondsRest;
@@ -391,7 +421,7 @@ const CountdownTimer = (props) => {
             <div style={{"--offset": offset}} className="countdown-wrapper">
                 {userSpecifiedTime ?
                     <div className="session-counter">
-                        {isWork? <h2>Focus {workSession}</h2> : <h2>Break {breakSession}</h2>}
+                        {isWork? <h2>Focus {workSession}</h2> : <h2>Break {workSession - 1}</h2>}
                     </div>
                     :
                     <div className="session-counter">

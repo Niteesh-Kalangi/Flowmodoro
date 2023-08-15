@@ -10,11 +10,6 @@ const StudyLog = () => {
         return log? log : []
     });
 
-    const [todoList, setTodoList] = useState(() => {
-        const localData = localStorage.getItem('todoList');
-        return localData ? JSON.parse(localData) : [];
-    });
-
     return (
         <div className="studylog">
             {/* <h1 className="title">This is the study log page</h1> */}
@@ -27,6 +22,8 @@ const StudyLog = () => {
                         startTime={item.startTime}
                         endTime={item.endTime}
                         numCompletedTasks={item.numCompletedTasks}
+                        completedList={item.completedList}
+                        focusTime={item.focusTime}
                         id={uuidv4()}
                     />
                 )}
